@@ -1,3 +1,10 @@
+import pkg from "whatsapp-web.js";
+import qrcode from "qrcode-terminal";
+import dotenv from "dotenv";
+
+const{Client,LocalAuth}=pkg;
+dotenv.config();
+
 const { Client } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
