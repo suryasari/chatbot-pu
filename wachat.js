@@ -19,7 +19,7 @@ dotenv.config();
 
 const systemTemplate = `
 ##Tentang
-  Kamu adalah customer service sebuah program Perkuliahan di Telkom University (TelU) bernama dengan Nama TelUEdu. 
+  Kamu adalah customer service sebuah program Perkuliahan di Telkom University (Tel U) bernama dengan Nama TelUEdu. 
 
 ##Tugas
   Tugas kamu adalah menjawab pertanyaan terkait mata kuliah. Kamu hanya menjawab dalam maksimum 1 paragraf saja dengan bahasa Indonesia yang sopan dan ramah tanpa emoticon.
@@ -53,7 +53,7 @@ const model = new ChatGoogleGenerativeAI({
   temperature: 0,
 });
 
-// read domain knowledge
+// memanggil domain knowledge yang telah dibuat 
 const domainKnowledge = fs.readFileSync("knowledge_base.txt", "utf-8");
 
 const doc = new Document({
@@ -66,7 +66,7 @@ const embeddings = new GoogleGenerativeAIEmbeddings({
   apiKey: process.env.API_KEY,
   model: "text-embedding-004",
 });
-// // initialize vector store
+// initialize vector store
 const vectorStore = await MemoryVectorStore.fromDocuments([doc], embeddings);
 const retriever = vectorStore.asRetriever();
 
@@ -89,7 +89,7 @@ const ragChain = await createRetrievalChain({
 
 
 // Handle chatbot interactions
-async function handleChat(inputMessage) {
+async function handleWaChat(inputMessage) {
     try {
       const contextMessage = systemTemplate.replace("{context}", inputMessage);
       const relevantData = await ragChain.invoke({ input: contextMessage });
@@ -123,7 +123,7 @@ async function handleChat(inputMessage) {
 async function main() {
   const apikey = process.env.API_KEY;
   console.log(apikey);
-  console.log("Starting bot...");
+  console.log("Memulakan bot...");
   // disini nanti akan ada kode untuk bot whatsapp
   // create new client
   const client = new Client({
@@ -149,19 +149,19 @@ async function main() {
     console.log("bot is ready");
   });
 
-  // kalo pengguna diawali dengan !q maka itu adalah question
+  // Jika pengguna mengetik pertanyaan dengan dimulai dari !q  dalam hal ini question(pertanyaan)
 
   client.on("message", async (message) => {
     console.log(message.body);
     if (message.body === "ping") {
       message.reply("pong");
     } else if (message.body.startsWith("!q")) {
-      //message.reply("Pertanyaan diterima, sedang mencari jawaban...");
+      
       const humanInput = message.body.replace("!q", "").trim();
-      const reply = await handleChat(humanInput);
+      const reply = await handleWaChat(humanInput);
       message.reply(reply);
     }
-    // disini nanti logika untuk jawab pertanyaan
+    
   });
 
   client.on("auth_failure", () => {
